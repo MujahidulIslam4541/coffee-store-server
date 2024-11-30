@@ -36,7 +36,13 @@ async function run() {
       res.send(result);
     });
 
-    
+    // FindOut One coffee
+    app.get("/coffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const quarry = { _id: new ObjectId(id) };
+      const result = await coffeeCollection.findOne(quarry);
+      res.send(result);
+    });
 
     // Coffee post
     app.post("/coffee", async (req, res) => {
@@ -46,8 +52,27 @@ async function run() {
       res.send(result);
     });
 
-    // Coffee Delete
+    // coffee update
+    app.put(`/coffee/:id`, async (req, res) => {
+      const id = req.params.id;
+      const quarry = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedCoffee=req.body;
+      const coffee={
+        $set:{
+          name:updatedCoffee.name,
+          price:updatedCoffee.price,
+          test:updatedCoffee.test,
+          category:updatedCoffee.category,
+          details:updatedCoffee.details,
+          photo:updatedCoffee.photo
+        }
+      }
+      const result=await coffeeCollection.updateOne(quarry, coffee,options)
+      res.send(result)
+    });
 
+    // Coffee Delete
     app.delete("/coffee/:id", async (req, res) => {
       const id = req.params.id;
       const quarry = { _id: new ObjectId(id) };
